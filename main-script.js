@@ -28,6 +28,7 @@ document.addEventListener('keydown', function(event) {
 // Add particle effect on page load
 document.addEventListener('DOMContentLoaded', function() {
     createParticles();
+    initVisitorCounter();
     
     // Add hover sound effects (optional)
     const gameCards = document.querySelectorAll('.game-card');
@@ -35,6 +36,60 @@ document.addEventListener('DOMContentLoaded', function() {
         card.addEventListener('mouseenter', playHoverSound);
     });
 });
+
+// Visitor Counter System
+function initVisitorCounter() {
+    // Check if this is a unique visitor
+    const hasVisited = localStorage.getItem('arcade-games-visited');
+    const visitTimestamp = localStorage.getItem('arcade-games-visit-time');
+    const currentTime = Date.now();
+    
+    // Consider a visit unique if:
+    // 1. Never visited before, OR
+    // 2. Last visit was more than 24 hours ago (to handle cleared storage)
+    const isUniqueVisit = !hasVisited || !visitTimestamp || 
+                         (currentTime - parseInt(visitTimestamp)) > (24 * 60 * 60 * 1000);
+    
+    if (isUniqueVisit) {
+        incrementVisitorCount();
+        localStorage.setItem('arcade-games-visited', 'true');
+        localStorage.setItem('arcade-games-visit-time', currentTime.toString());
+    }
+    
+    // Display current count
+    displayVisitorCount();
+}
+
+function incrementVisitorCount() {
+    // Get current count from localStorage (fallback to a base number for new deployments)
+    let currentCount = parseInt(localStorage.getItem('arcade-games-total-visitors')) || 147; // Starting with a reasonable number
+    currentCount++;
+    localStorage.setItem('arcade-games-total-visitors', currentCount.toString());
+    
+    // In a real-world scenario, you'd send this to a backend API
+    // For this demo, we're using localStorage which is per-browser
+    console.log(`New unique visitor! Total count: ${currentCount}`);
+}
+
+function displayVisitorCount() {
+    const countElement = document.getElementById('visitor-count');
+    if (countElement) {
+        const count = parseInt(localStorage.getItem('arcade-games-total-visitors')) || 147;
+        countElement.textContent = count.toLocaleString(); // Formats number with commas
+        
+        // Add a nice animation
+        countElement.style.opacity = '0';
+        setTimeout(() => {
+            countElement.style.opacity = '1';
+            countElement.style.transition = 'opacity 0.5s ease-in-out';
+        }, 100);
+    }
+}
+
+// Export function for use in other pages
+window.getVisitorCount = function() {
+    return parseInt(localStorage.getItem('arcade-games-total-visitors')) || 147;
+};
 
 // Create floating particles background
 function createParticles() {

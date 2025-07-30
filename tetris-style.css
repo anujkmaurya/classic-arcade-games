@@ -145,6 +145,25 @@ body {
     margin-top: 10px;
 }
 
+.visitor-counter-small {
+    margin: 8px 0;
+    padding: 5px 12px;
+    background: rgba(74, 144, 226, 0.2);
+    border: 1px solid #4a90e2;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+.visitor-counter-small span {
+    font-size: 11px;
+    color: #4a90e2;
+    font-weight: bold;
+}
+
+.visitor-counter-small span span {
+    color: #00ff00;
+}
+
 #sound-status {
     background: rgba(74, 144, 226, 0.2);
     padding: 5px 10px;

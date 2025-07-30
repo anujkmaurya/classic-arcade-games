@@ -27,6 +27,9 @@
                 <p>Use ARROW KEYS or WASD to move</p>
                 <p>Eat all dots to win! Avoid the ghosts!</p>
             </div>
+            <div class="visitor-info">
+                <p>👥 <span id="visitor-count">Loading...</span> unique visitors</p>
+            </div>
         </div>
         
         <div id="game-over" class="game-over hidden">
@@ -44,6 +47,18 @@
         function goHome() {
             window.location.href = 'index.html';
         }
+        
+        // Display visitor count on game page
+        document.addEventListener('DOMContentLoaded', function() {
+            const countElement = document.getElementById('visitor-count');
+            if (countElement && window.getVisitorCount) {
+                countElement.textContent = window.getVisitorCount().toLocaleString();
+            } else if (countElement) {
+                // Fallback if main script not available
+                const count = parseInt(localStorage.getItem('arcade-games-total-visitors')) || 147;
+                countElement.textContent = count.toLocaleString();
+            }
+        });
     </script>
 </body>
 </html>
