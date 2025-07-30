@@ -25,6 +25,33 @@ body {
 
 .game-header {
     margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.back-button {
+    margin-left: auto;
+}
+
+.back-button button {
+    background-color: rgba(255, 215, 0, 0.2);
+    color: #FFD700;
+    border: 2px solid #FFD700;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', monospace;
+}
+
+.back-button button:hover {
+    background-color: #FFD700;
+    color: #000;
+    transform: scale(1.05);
 }
 
 .score-display {
@@ -87,13 +114,14 @@ body {
 
 .pacman::after {
     content: '';
-    width: 20px;
-    height: 20px;
+    width: calc(20px * var(--pacman-size, 1));
+    height: calc(20px * var(--pacman-size, 1));
     background-color: #FFD700;
     border-radius: 50%;
     position: absolute;
     clip-path: polygon(20% 0%, 0% 50%, 20% 100%, 100% 100%, 100% 0%);
     animation: chomp 0.5s infinite alternate;
+    transition: width 0.3s ease, height 0.3s ease;
 }
 
 .pacman.up::after {
@@ -213,7 +241,7 @@ body {
     color: #FFD700;
 }
 
-#restart-btn {
+.game-over-content button {
     background-color: #FFD700;
     color: #000;
     border: none;
@@ -223,9 +251,10 @@ body {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
+    margin: 5px 10px;
 }
 
-#restart-btn:hover {
+.game-over-content button:hover {
     background-color: #FFA500;
     transform: scale(1.05);
 }

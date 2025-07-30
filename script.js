@@ -3,8 +3,7 @@ let gameBoard;
 let pacmanPosition = { x: 9, y: 15 };
 let ghosts = [
     { x: 9, y: 9, direction: 'up', color: 'red' },
-    { x: 8, y: 9, direction: 'left', color: 'pink' },
-    { x: 10, y: 9, direction: 'right', color: 'cyan' }
+    { x: 8, y: 9, direction: 'left', color: 'pink' }
 ];
 let score = 0;
 let lives = 3;
@@ -12,6 +11,7 @@ let gameRunning = true;
 let pacmanDirection = 'right';
 let totalDots = 0;
 let dotsEaten = 0;
+let pacmanSize = 1; // New variable to track Pac-Man's size
 
 // Game board layout (1 = wall, 0 = dot, 2 = empty path)
 const boardLayout = [
@@ -177,6 +177,12 @@ function movePacman() {
             cell.classList.remove('dot');
             score += 10;
             dotsEaten++;
+            
+            // Increase Pac-Man size every 5 dots eaten (max size 2.5)
+            if (dotsEaten % 5 === 0 && pacmanSize < 2.5) {
+                pacmanSize += 0.1;
+            }
+            
             updateScore();
             
             // Check win condition
@@ -251,6 +257,8 @@ function getDistance(pos1, pos2) {
 function updatePacmanPosition() {
     const cell = document.getElementById(`cell-${pacmanPosition.x}-${pacmanPosition.y}`);
     cell.classList.add('pacman', pacmanDirection);
+    // Update Pac-Man size using CSS custom property
+    cell.style.setProperty('--pacman-size', pacmanSize);
 }
 
 // Clear Pac-Man from current position
@@ -314,10 +322,10 @@ function resetPositions() {
     pacmanPosition = { x: 9, y: 15 };
     ghosts = [
         { x: 9, y: 9, direction: 'up', color: 'red' },
-        { x: 8, y: 9, direction: 'left', color: 'pink' },
-        { x: 10, y: 9, direction: 'right', color: 'cyan' }
+        { x: 8, y: 9, direction: 'left', color: 'pink' }
     ];
     pacmanDirection = 'right';
+    pacmanSize = 1; // Reset Pac-Man size
     
     updatePacmanPosition();
     updateGhostPositions();
@@ -359,14 +367,14 @@ function restartGame() {
     pacmanPosition = { x: 9, y: 15 };
     ghosts = [
         { x: 9, y: 9, direction: 'up', color: 'red' },
-        { x: 8, y: 9, direction: 'left', color: 'pink' },
-        { x: 10, y: 9, direction: 'right', color: 'cyan' }
+        { x: 8, y: 9, direction: 'left', color: 'pink' }
     ];
     score = 0;
     lives = 3;
     gameRunning = true;
     pacmanDirection = 'right';
     dotsEaten = 0;
+    pacmanSize = 1; // Reset Pac-Man size
     
     // Hide game over screen
     document.getElementById('game-over').classList.add('hidden');
@@ -386,7 +394,7 @@ function gameLoop() {
     checkCollision();
     
     // Continue game loop
-    setTimeout(gameLoop, 200); // Adjust speed here (lower = faster)
+    setTimeout(gameLoop, 150); // Increased speed (was 200, now 150 = faster ghosts)
 }
 
 // Start the game when page loads

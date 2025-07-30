@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris Game</title>
+    <link rel="stylesheet" href="tetris-style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Audio elements for sound effects -->
+        <audio id="drop-sound" preload="auto">
+            <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBjyP0/HOfS0GI3PA7N2XQwQReqvn77FfGAg+ltryxnIlBSl+zPPaizsIGGS57OSaUBALTKXh8bllHgg2jdXzzn0vByZxvu7dnEoSB1am3+22YRsFHnyf0dT6cE0TCA1nEsLdlEgI">
+            </source>
+        </audio>
+        <audio id="line-clear-sound" preload="auto">
+            <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBjyP0/HOfS0GI3PA7N2XQwUXeqvn77FfGAg+ltryxnIlBSl+zPPaizsIGGS57OSaUBALTKXh8bllHgg2jdXzzn0vByZxvu7dnEoSB1am3+22YRsFHnyf0dT6cE0TCA">
+            </source>
+        </audio>
+        <audio id="game-start-sound" preload="auto">
+            <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBjyP0/HOfS0GI3PA7N2XQwUXeqvn77FfGAg+ltryxnIlBSl+zPPaizsIGGS57OSaUBALTKXh8bllHgg2jdXzzn0vByZxvu7dnEoSB1am3+22YRsFPXKu1fT6dFETBw1cqeHwt2YbBTV7xPPLgDEJGVy46+dVFQhFpOHwuWhfGAU3k9Dp2YU2CRJYquvwmnQgCzd+xfXJfS8FNXzC8t2URA8TWK3l8bhmHQc2jdDy0IA2CRZiturwl3QeCzN8w/HDgTEJGWO97+KeUxIOUKbn8blpHgU4ltLx13ojBzN+wPDajzsLXKvp8bJtIAg4k9Lz1YI2CRhht+vwl3keBzB6wfHagzEJGmC78OSfUxIMUqvp77dsIQc3ldDy2IIiCzZ7yfDajjoLXavp8a9wIwg2kdDy2YIiCzZ7yO/bkDoLXazo8LBwIwg2kdHy2YIiCzR8yfDajToLXarx77JwIwg2kdHy2IIiCzR8yfDajToLXarx77JwIwg1kdHy2YIiCzV8yfDajToLXKrx77JwIwg1kdHy2YI=">
+            </source>
+        </audio>
+        <audio id="tetris-sound" preload="auto">
+            <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBjyP0/HOfS0GI3PA7N2XQwUXeqvn77FfGAg+ltryxnIlBSl+zPPaizsIGGS57OSaUBALTKXh8bllHgg2jdXzzn0vByZxvu7dnEoSB1am3+22YRsFPXKu1fT6dFETBw1cqeHwt2YbBTV7xPPLgDEJGVy46+dVFQhFpOHwuWhfGAU3k9Dp2YU2CRJYquvwmnQgCzd+xfXJfS8FNXzC8t2URA8TWK3l8bhmHQc2jdDy0IA2CRZiturwl3QeCzN8w/HDgTEJGWO97+KeUxIOUKbn8blpHgU4ltLx13ojBzN+wPDajzsLXKvp8bJtIAg4k9Lz1YI2CRhht+vwl3keBzB6wfHagzEJGmC78OSfUxIMUqvp77dsIQc3ldDy2IIiCzZ7yfDajjoLXavp8a9wIwg2kdDy2YIiCzZ7yO/bkDoLXazo8LBwIwg2kdHy2YIiCzR8yfDajToLXarx77JwIwg2kdHy2IIiCzR8yfDajToLXarx77JwIwg1kdHy2YIiCzV8yfDajToLXKrx77JwIwg1kdHy2YI=">
+            </source>
+        </audio>
+        <audio id="rotate-sound" preload="auto">
+            <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBjyP0/HOfS0GI3PA7N2XQwUXeqvn77FfGAg+ltryxnIlBSl+zPPaizsIGGS57OSaUBALTKXh8bllHgg2jdXzzn0vByZxvu7dnEoSB1am3+22YRsFPXKu1fT6dFETBw1c">
+            </source>
+        </audio>
+
+        <div class="game-header">
+            <h1>TETRIS</h1>
+            <div class="score-display">
+                <div class="score-item">
+                    <span>SCORE</span>
+                    <span id="score">0</span>
+                </div>
+                <div class="score-item">
+                    <span>LEVEL</span>
+                    <span id="level">1</span>
+                </div>
+                <div class="score-item">
+                    <span>LINES</span>
+                    <span id="lines">0</span>
+                </div>
+            </div>
+            <div class="back-button">
+                <button onclick="goHome()">🏠 Back to Menu</button>
+            </div>
+        </div>
+        
+        <div class="game-main">
+            <div class="next-piece">
+                <h3>NEXT</h3>
+                <canvas id="next-canvas" width="120" height="120"></canvas>
+            </div>
+            
+            <div class="game-board-container">
+                <canvas id="game-board" width="300" height="600"></canvas>
+                <div id="game-over" class="game-over hidden">
+                    <div class="game-over-content">
+                        <h2>GAME OVER</h2>
+                        <p>Final Score: <span id="final-score">0</span></p>
+                        <p>Lines Cleared: <span id="final-lines">0</span></p>
+                        <button id="restart-btn" onclick="restartGame()">Play Again</button>
+                        <button onclick="goHome()">Back to Menu</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls-info">
+                <h3>CONTROLS</h3>
+                <div class="control-item">
+                    <span>←→</span>
+                    <span>Move</span>
+                </div>
+                <div class="control-item">
+                    <span>↓</span>
+                    <span>Soft Drop</span>
+                </div>
+                <div class="control-item">
+                    <span>↑ / Space</span>
+                    <span>Rotate</span>
+                </div>
+                <div class="control-item">
+                    <span>P</span>
+                    <span>Pause</span>
+                </div>
+                <div class="control-item">
+                    <span>M</span>
+                    <span>Mute/Unmute</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-footer">
+            <p>Use arrow keys to play • Space or Up arrow to rotate • M to toggle sound</p>
+            <div class="sound-indicator">
+                <span id="sound-status">🔊 Sound ON</span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="tetris-script.js"></script>
+    <script>
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
