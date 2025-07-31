@@ -114,14 +114,13 @@ body {
 
 .pacman::after {
     content: '';
-    width: calc(20px * var(--pacman-size, 1));
-    height: calc(20px * var(--pacman-size, 1));
+    width: 20px;
+    height: 20px;
     background-color: #FFD700;
     border-radius: 50%;
     position: absolute;
     clip-path: polygon(20% 0%, 0% 50%, 20% 100%, 100% 100%, 100% 0%);
     animation: chomp 0.5s infinite alternate;
-    transition: width 0.3s ease, height 0.3s ease;
 }
 
 .pacman.up::after {
