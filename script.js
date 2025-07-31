@@ -13,6 +13,84 @@ let pacmanDirection = 'right';
 let totalDots = 0;
 let dotsEaten = 0;
 
+// Timing variables for different speeds
+let ghostMoveCounter = 0;
+let ghostMoveDelay = 2; // Ghosts move every 2 frames (slower than Pac-Man)
+
+// Sound system
+let audioContext = null;
+let soundEnabled = true;
+
+// Initialize audio context
+function initAudio() {
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (error) {
+        console.warn('Audio not supported');
+        soundEnabled = false;
+    }
+}
+
+// Sound generation functions
+function playEatingSound() {
+    if (!soundEnabled || !audioContext) return;
+    
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+    oscillator.type = 'square';
+    
+    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.1);
+}
+
+function playMovementSound() {
+    if (!soundEnabled || !audioContext) return;
+    
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 200;
+    oscillator.type = 'sine';
+    
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.05);
+}
+
+function playDeathSound() {
+    if (!soundEnabled || !audioContext) return;
+    
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.8);
+    oscillator.type = 'sawtooth';
+    
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.8);
+}
+
 // Game board layout (1 = wall, 0 = dot, 2 = empty path)
 const boardLayout = [
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -41,6 +119,7 @@ const boardLayout = [
 // Initialize the game
 function initGame() {
     gameBoard = document.getElementById('game-board');
+    initAudio(); // Initialize audio system
     createBoard();
     updateScore();
     updateLives();
@@ -171,12 +250,16 @@ function movePacman() {
         // Update position
         pacmanPosition = newPos;
         
+        // Play movement sound
+        playMovementSound();
+        
         // Check for dot collection
         const cell = document.getElementById(`cell-${pacmanPosition.x}-${pacmanPosition.y}`);
         if (cell.classList.contains('dot')) {
             cell.classList.remove('dot');
             score += 10;
             dotsEaten++;
+            playEatingSound(); // Play eating sound
             updateScore();
             
             // Check win condition
@@ -293,6 +376,7 @@ function checkCollision() {
         const ghost = ghosts[i];
         if (pacmanPosition.x === ghost.x && pacmanPosition.y === ghost.y) {
             lives--;
+            playDeathSound(); // Play death sound when caught by ghost
             updateLives();
             
             if (lives <= 0) {
@@ -382,11 +466,18 @@ function gameLoop() {
     if (!gameRunning) return;
     
     movePacman();
-    moveGhosts();
+    
+    // Move ghosts less frequently for better balance
+    ghostMoveCounter++;
+    if (ghostMoveCounter >= ghostMoveDelay) {
+        moveGhosts();
+        ghostMoveCounter = 0;
+    }
+    
     checkCollision();
     
     // Continue game loop
-    setTimeout(gameLoop, 250); // Reduced ghost speed (higher value = slower)
+    setTimeout(gameLoop, 150); // Improved responsiveness for Pac-Man movement
 }
 
 // Start the game when page loads
